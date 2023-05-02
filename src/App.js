@@ -6,5 +6,5 @@ function App() {
     <span>Hello, App!</span>
   );
 }
-
+// commmit inicial
 export default App;
