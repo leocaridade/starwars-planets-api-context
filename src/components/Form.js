@@ -3,7 +3,7 @@ import Mycontext from '../contexts/Mycontext';
 
 function Form() {
   const { column, setColumn, comparison, setComparison, number,
-    setNumber, handleFilter } = useContext(Mycontext);
+    setNumber, handleFilter, setSort, handleSort } = useContext(Mycontext);
 
   return (
     <div>
@@ -46,6 +46,47 @@ function Form() {
           onClick={ handleFilter }
         >
           FILTRAR
+        </button>
+        <label>
+          Ordenar:
+          <select
+            data-testid="column-sort"
+            value={ column }
+            onChange={ ({ target }) => setColumn(target.value) }
+          >
+            <option value="population">population</option>
+            <option value="orbital_period">orbital_period</option>
+            <option value="diameter">diameter</option>
+            <option value="rotation_period">rotation_period</option>
+            <option value="surface_water">surface_water</option>
+          </select>
+        </label>
+        <label>
+          Ascendente
+          <input
+            type="radio"
+            data-testid="column-sort-input-asc"
+            value="ASC"
+            name="sort"
+            onChange={ ({ target }) => setSort(target.value) }
+          />
+        </label>
+        <label>
+          Descendente
+          <input
+            type="radio"
+            data-testid="column-sort-input-desc"
+            value="DESC"
+            name="sort"
+            onChange={ ({ target }) => setSort(target.value) }
+          />
+        </label>
+        <button
+          type="button"
+          data-testid="column-sort-button"
+          onClick={ handleSort }
+        >
+          ORDENAR
         </button>
       </form>
     </div>

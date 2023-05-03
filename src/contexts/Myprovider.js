@@ -9,7 +9,8 @@ function Myprovider({ children }) {
   const [column, setColumn] = useState('population');
   const [comparison, setComparison] = useState('maior que');
   const [number, setNumber] = useState(0);
-  // const [filters, setFilters] = useState([]);
+  const [filters, setFilters] = useState([]);
+  const [sort, setSort] = useState('ASC');
 
   useEffect(() => {
     fetch('https://swapi.dev/api/planets')
@@ -29,17 +30,35 @@ function Myprovider({ children }) {
     if (comparison === 'maior que') {
       const filtered = apiData.filter((data) => Number(data[column]) > number);
       setApiData(filtered);
-      // setFilters(...filters, { column, comparison, number });
+      setFilters([...filters, { column, comparison, number }]);
     } else if (comparison === 'menor que') {
       const filtered = apiData.filter((data) => Number(data[column]) < number);
       setApiData(filtered);
-      // setFilters(...filters, { column, comparison, number });
+      setFilters([...filters, { column, comparison, number }]);
     } else if (comparison === 'igual a') {
       const filtered = apiData.filter((data) => data[column] === number);
       setApiData(filtered);
-      // setFilters(...filters, { column, comparison, number });
+      setFilters([...filters, { column, comparison, number }]);
     }
-  }, [apiData, column, comparison, number]);
+  }, [apiData, column, comparison, number, filters]);
+
+  const handleSort = useCallback(() => {
+    if (sort === 'ASC') {
+      const unknown = apiData.filter((data) => data[column] === 'unknown');
+      const notUnknown = apiData.filter((data) => data[column] !== 'unknown');
+      const sortedNotUnknown = notUnknown
+        .sort((a, b) => Number(a[column]) - Number(b[column]));
+      setApiData([...sortedNotUnknown, ...unknown]);
+      setFilters([...filters, { column, sort }]);
+    } else if (sort === 'DESC') {
+      const unknown = apiData.filter((data) => data[column] === 'unknown');
+      const notUnknown = apiData.filter((data) => data[column] !== 'unknown');
+      const sortedNotUnknown = notUnknown
+        .sort((a, b) => Number(b[column]) - Number(a[column]));
+      setApiData([...sortedNotUnknown, ...unknown]);
+      setFilters([...filters, { column, sort }]);
+    }
+  }, [sort, apiData, column, filters]);
 
   const values = useMemo(() => ({
     apiData,
@@ -53,8 +72,12 @@ function Myprovider({ children }) {
     number,
     setNumber,
     handleFilter,
+    sort,
+    setSort,
+    handleSort,
   }), [apiData, initialApiData, inputText, setInputText, column, setColumn,
-    comparison, setComparison, number, setNumber, handleFilter]);
+    comparison, setComparison, number, setNumber,
+    handleFilter, sort, setSort, handleSort]);
 
   return (
     <Mycontext.Provider value={ values }>
