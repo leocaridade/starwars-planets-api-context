@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
-import Mycontext from '../contexts/Mycontext';
+import Context from '../contexts/Context';
 
 function Table() {
-  const { apiData, inputText } = useContext(Mycontext);
+  const { apiData, inputText } = useContext(Context);
   const keys = apiData.length > 0 ? Object.keys(apiData[0]) : [];
 
   return (

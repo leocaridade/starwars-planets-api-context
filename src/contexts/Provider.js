@@ -1,15 +1,20 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import Mycontext from './Mycontext';
+import Context from './Context';
 
-function Myprovider({ children }) {
+const columns = ['population', 'orbital_period',
+  'diameter', 'rotation_period', 'surface_water'];
+
+function Provider({ children }) {
   const [apiData, setApiData] = useState([]);
   const [initialApiData, setInitialApiData] = useState([]);
   const [inputText, setInputText] = useState('');
   const [column, setColumn] = useState('population');
+  const [columnOptions, setColumnOptions] = useState(columns);
   const [comparison, setComparison] = useState('maior que');
   const [number, setNumber] = useState(0);
   const [filters, setFilters] = useState([]);
+  const [sortColumn, setSortColumn] = useState('population');
   const [sort, setSort] = useState('ASC');
 
   useEffect(() => {
@@ -27,38 +32,64 @@ function Myprovider({ children }) {
   }, []);
 
   const handleFilter = useCallback(() => {
+    // const newColumns = columnOptions.filter((col) => col !== column);
+    // setColumnOptions(newColumns);
+    // apiData.filter((data) => {
+    //   let filtered;
+    //   if (comparison === 'maior que') {
+    //     filtered = Number(data[column] > number);
+    //   } else if (comparison === 'menor que') {
+    //     Number(data[column] < number);
+    //   } else if (comparison === 'igual a') {
+    //     data[column] === number;
+    //   }
+    //   return filtered;
+    // });
+    // setApiData(filtered);
     if (comparison === 'maior que') {
       const filtered = apiData.filter((data) => Number(data[column]) > number);
       setApiData(filtered);
       setFilters([...filters, { column, comparison, number }]);
+      const newColumns = columnOptions.filter((col) => col !== column);
+      setColumnOptions(newColumns);
+      setColumn(newColumns[0]);
     } else if (comparison === 'menor que') {
       const filtered = apiData.filter((data) => Number(data[column]) < number);
       setApiData(filtered);
       setFilters([...filters, { column, comparison, number }]);
+      const newColumns = columnOptions.filter((col) => col !== column);
+      setColumnOptions(newColumns);
+      setColumn(newColumns[0]);
     } else if (comparison === 'igual a') {
       const filtered = apiData.filter((data) => data[column] === number);
       setApiData(filtered);
       setFilters([...filters, { column, comparison, number }]);
+      const newColumns = columnOptions.filter((col) => col !== column);
+      setColumnOptions(newColumns);
+      setColumn(newColumns[0]);
     }
-  }, [apiData, column, comparison, number, filters]);
+  }, [apiData, column, comparison, number, filters, columnOptions]);
 
   const handleSort = useCallback(() => {
+    const unknown = apiData.filter((data) => data[sortColumn] === 'unknown');
+    const notUnknown = apiData.filter((data) => data[sortColumn] !== 'unknown');
     if (sort === 'ASC') {
-      const unknown = apiData.filter((data) => data[column] === 'unknown');
-      const notUnknown = apiData.filter((data) => data[column] !== 'unknown');
       const sortedNotUnknown = notUnknown
-        .sort((a, b) => Number(a[column]) - Number(b[column]));
+        .sort((a, b) => Number(a[sortColumn]) - Number(b[sortColumn]));
       setApiData([...sortedNotUnknown, ...unknown]);
-      setFilters([...filters, { column, sort }]);
+      setFilters([...filters, { sortColumn, sort }]);
     } else if (sort === 'DESC') {
-      const unknown = apiData.filter((data) => data[column] === 'unknown');
-      const notUnknown = apiData.filter((data) => data[column] !== 'unknown');
       const sortedNotUnknown = notUnknown
-        .sort((a, b) => Number(b[column]) - Number(a[column]));
+        .sort((a, b) => Number(b[sortColumn]) - Number(a[sortColumn]));
       setApiData([...sortedNotUnknown, ...unknown]);
-      setFilters([...filters, { column, sort }]);
+      setFilters([...filters, { sortColumn, sort }]);
     }
-  }, [sort, apiData, column, filters]);
+  }, [sort, apiData, sortColumn, filters]);
+
+  const handleRemove = useCallback(() => {
+    setApiData(initialApiData);
+    setFilters([]);
+  }, [initialApiData]);
 
   const values = useMemo(() => ({
     apiData,
@@ -67,27 +98,32 @@ function Myprovider({ children }) {
     setInputText,
     column,
     setColumn,
+    columnOptions,
     comparison,
     setComparison,
     number,
     setNumber,
+    filters,
     handleFilter,
+    sortColumn,
+    setSortColumn,
     sort,
     setSort,
     handleSort,
+    handleRemove,
   }), [apiData, initialApiData, inputText, setInputText, column, setColumn,
-    comparison, setComparison, number, setNumber,
-    handleFilter, sort, setSort, handleSort]);
+    columnOptions, comparison, setComparison, number, setNumber, filters,
+    handleFilter, sortColumn, setSortColumn, sort, setSort, handleSort, handleRemove]);
 
   return (
-    <Mycontext.Provider value={ values }>
+    <Context.Provider value={ values }>
       {children}
-    </Mycontext.Provider>
+    </Context.Provider>
   );
 }
 
-Myprovider.propTypes = {
+Provider.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-export default Myprovider;
+export default Provider;

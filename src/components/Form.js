@@ -1,9 +1,10 @@
 import React, { useContext } from 'react';
-import Mycontext from '../contexts/Mycontext';
+import Context from '../contexts/Context';
 
 function Form() {
-  const { column, setColumn, comparison, setComparison, number,
-    setNumber, handleFilter, setSort, handleSort } = useContext(Mycontext);
+  const { column, setColumn, columnOptions, comparison, setComparison, number,
+    setNumber, filters, handleFilter, sortColumn, setSortColumn, setSort,
+    handleSort, handleRemove } = useContext(Context);
 
   return (
     <div>
@@ -15,11 +16,16 @@ function Form() {
             value={ column }
             onChange={ ({ target }) => setColumn(target.value) }
           >
-            <option value="population">population</option>
+            {
+              columnOptions.map((option) => (
+                <option key={ option } value={ option }>{option}</option>
+              ))
+            }
+            {/* <option value="population">population</option>
             <option value="orbital_period">orbital_period</option>
             <option value="diameter">diameter</option>
             <option value="rotation_period">rotation_period</option>
-            <option value="surface_water">surface_water</option>
+            <option value="surface_water">surface_water</option> */}
           </select>
         </label>
         <label>
@@ -51,8 +57,8 @@ function Form() {
           Ordenar:
           <select
             data-testid="column-sort"
-            value={ column }
-            onChange={ ({ target }) => setColumn(target.value) }
+            value={ sortColumn }
+            onChange={ ({ target }) => setSortColumn(target.value) }
           >
             <option value="population">population</option>
             <option value="orbital_period">orbital_period</option>
@@ -88,7 +94,27 @@ function Form() {
         >
           ORDENAR
         </button>
+        <button
+          type="button"
+          data-testid="button-remove-filters"
+          onClick={ handleRemove }
+        >
+          Remover Filtros
+        </button>
       </form>
+      <div>
+        {
+          filters.length > 0 && (
+            // console.log(filters)
+            filters.map((filter, index) => (
+              <div key={ index }>
+                <p>{`${filter.column} ${filter.comparison} ${filter.number}`}</p>
+                <button>Remover</button>
+              </div>
+            ))
+          )
+        }
+      </div>
     </div>
   );
 }

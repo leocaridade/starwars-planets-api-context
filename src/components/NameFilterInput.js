@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
-import Mycontext from '../contexts/Mycontext';
+import Context from '../contexts/Context';
 
 function NameFilterInput() {
-  const { inputText, setInputText } = useContext(Mycontext);
+  const { inputText, setInputText } = useContext(Context);
 
   return (
     <div>
