@@ -4,7 +4,7 @@ import Context from '../contexts/Context';
 function Form() {
   const { column, setColumn, columnOptions, comparison, setComparison, number,
     setNumber, filters, handleFilter, sortColumn, setSortColumn, setSort,
-    handleSort, handleRemove } = useContext(Context);
+    handleSort, handleRemoveAll, handleSingleRemove } = useContext(Context);
 
   return (
     <div>
@@ -21,11 +21,6 @@ function Form() {
                 <option key={ option } value={ option }>{option}</option>
               ))
             }
-            {/* <option value="population">population</option>
-            <option value="orbital_period">orbital_period</option>
-            <option value="diameter">diameter</option>
-            <option value="rotation_period">rotation_period</option>
-            <option value="surface_water">surface_water</option> */}
           </select>
         </label>
         <label>
@@ -97,7 +92,7 @@ function Form() {
         <button
           type="button"
           data-testid="button-remove-filters"
-          onClick={ handleRemove }
+          onClick={ handleRemoveAll }
         >
           Remover Filtros
         </button>
@@ -105,11 +100,17 @@ function Form() {
       <div>
         {
           filters.length > 0 && (
-            // console.log(filters)
             filters.map((filter, index) => (
-              <div key={ index }>
+              <div
+                key={ index }
+                data-testid="filter"
+              >
                 <p>{`${filter.column} ${filter.comparison} ${filter.number}`}</p>
-                <button>Remover</button>
+                <button
+                  onClick={ handleSingleRemove }
+                >
+                  Remover
+                </button>
               </div>
             ))
           )

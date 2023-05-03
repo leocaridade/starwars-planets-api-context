@@ -32,20 +32,6 @@ function Provider({ children }) {
   }, []);
 
   const handleFilter = useCallback(() => {
-    // const newColumns = columnOptions.filter((col) => col !== column);
-    // setColumnOptions(newColumns);
-    // apiData.filter((data) => {
-    //   let filtered;
-    //   if (comparison === 'maior que') {
-    //     filtered = Number(data[column] > number);
-    //   } else if (comparison === 'menor que') {
-    //     Number(data[column] < number);
-    //   } else if (comparison === 'igual a') {
-    //     data[column] === number;
-    //   }
-    //   return filtered;
-    // });
-    // setApiData(filtered);
     if (comparison === 'maior que') {
       const filtered = apiData.filter((data) => Number(data[column]) > number);
       setApiData(filtered);
@@ -60,7 +46,7 @@ function Provider({ children }) {
       const newColumns = columnOptions.filter((col) => col !== column);
       setColumnOptions(newColumns);
       setColumn(newColumns[0]);
-    } else if (comparison === 'igual a') {
+    } else {
       const filtered = apiData.filter((data) => data[column] === number);
       setApiData(filtered);
       setFilters([...filters, { column, comparison, number }]);
@@ -78,7 +64,7 @@ function Provider({ children }) {
         .sort((a, b) => Number(a[sortColumn]) - Number(b[sortColumn]));
       setApiData([...sortedNotUnknown, ...unknown]);
       setFilters([...filters, { sortColumn, sort }]);
-    } else if (sort === 'DESC') {
+    } else {
       const sortedNotUnknown = notUnknown
         .sort((a, b) => Number(b[sortColumn]) - Number(a[sortColumn]));
       setApiData([...sortedNotUnknown, ...unknown]);
@@ -86,10 +72,17 @@ function Provider({ children }) {
     }
   }, [sort, apiData, sortColumn, filters]);
 
-  const handleRemove = useCallback(() => {
+  const handleRemoveAll = useCallback(() => {
     setApiData(initialApiData);
     setFilters([]);
   }, [initialApiData]);
+
+  // const handleSingleRemove = useCallback(() => {
+  //   const updatedFilters = filters.filter((e) => e !== filters[e]);
+  //   console.log(filters);
+  //   setFilters(updatedFilters);
+  //   setColumnOptions(columns);
+  // }, [filters]);
 
   const values = useMemo(() => ({
     apiData,
@@ -110,10 +103,12 @@ function Provider({ children }) {
     sort,
     setSort,
     handleSort,
-    handleRemove,
-  }), [apiData, initialApiData, inputText, setInputText, column, setColumn,
+    handleRemoveAll,
+  }), [apiData, initialApiData, inputText,
+    setInputText, column, setColumn,
     columnOptions, comparison, setComparison, number, setNumber, filters,
-    handleFilter, sortColumn, setSortColumn, sort, setSort, handleSort, handleRemove]);
+    handleFilter, sortColumn, setSortColumn, sort, setSort, handleSort,
+    handleRemoveAll]);
 
   return (
     <Context.Provider value={ values }>
