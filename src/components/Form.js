@@ -105,9 +105,18 @@ function Form() {
                 key={ index }
                 data-testid="filter"
               >
-                <p>{`${filter.column} ${filter.comparison} ${filter.number}`}</p>
+                <p>
+                  {
+                    filter.column ? (
+                      `${filter.column} ${filter.comparison} ${filter.number}`
+                    ) : (
+                      `${filter.sortColumn} ${filter.sort}`
+                    )
+                  }
+                </p>
                 <button
-                  onClick={ handleSingleRemove }
+                  type="button"
+                  onClick={ () => handleSingleRemove(filter.column) }
                 >
                   Remover
                 </button>

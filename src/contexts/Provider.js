@@ -77,12 +77,12 @@ function Provider({ children }) {
     setFilters([]);
   }, [initialApiData]);
 
-  // const handleSingleRemove = useCallback(() => {
-  //   const updatedFilters = filters.filter((e) => e !== filters[e]);
-  //   console.log(filters);
-  //   setFilters(updatedFilters);
-  //   setColumnOptions(columns);
-  // }, [filters]);
+  const handleSingleRemove = useCallback((col) => {
+    const updatedFilters = filters.filter((data) => data.column !== col);
+    setFilters(updatedFilters);
+    setColumnOptions((prevState) => [...prevState, col]);
+    setApiData(initialApiData);
+  }, [filters, initialApiData]);
 
   const values = useMemo(() => ({
     apiData,
@@ -104,11 +104,12 @@ function Provider({ children }) {
     setSort,
     handleSort,
     handleRemoveAll,
+    handleSingleRemove,
   }), [apiData, initialApiData, inputText,
     setInputText, column, setColumn,
     columnOptions, comparison, setComparison, number, setNumber, filters,
     handleFilter, sortColumn, setSortColumn, sort, setSort, handleSort,
-    handleRemoveAll]);
+    handleRemoveAll, handleSingleRemove]);
 
   return (
     <Context.Provider value={ values }>
