@@ -9,7 +9,7 @@ function Myprovider({ children }) {
   const [column, setColumn] = useState('population');
   const [comparison, setComparison] = useState('maior que');
   const [number, setNumber] = useState(0);
-  const [filters, setFilters] = useState([]);
+  // const [filters, setFilters] = useState([]);
 
   useEffect(() => {
     fetch('https://swapi.dev/api/planets')
@@ -29,17 +29,17 @@ function Myprovider({ children }) {
     if (comparison === 'maior que') {
       const filtered = apiData.filter((data) => Number(data[column]) > number);
       setApiData(filtered);
-      setFilters(...filters, { column, comparison, number });
+      // setFilters(...filters, { column, comparison, number });
     } else if (comparison === 'menor que') {
       const filtered = apiData.filter((data) => Number(data[column]) < number);
       setApiData(filtered);
-      setFilters(...filters, { column, comparison, number });
+      // setFilters(...filters, { column, comparison, number });
     } else if (comparison === 'igual a') {
       const filtered = apiData.filter((data) => data[column] === number);
       setApiData(filtered);
-      setFilters(...filters, { column, comparison, number });
+      // setFilters(...filters, { column, comparison, number });
     }
-  }, [apiData, column, comparison, number, filters]);
+  }, [apiData, column, comparison, number]);
 
   const values = useMemo(() => ({
     apiData,
