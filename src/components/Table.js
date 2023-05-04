@@ -5,6 +5,8 @@ function Table() {
   const { apiData, inputText } = useContext(Context);
   const keys = apiData.length > 0 ? Object.keys(apiData[0]) : [];
 
+  const apiDataFilteredByName = apiData.filter((data) => data.name.includes(inputText));
+
   return (
     <div>
       <table>
@@ -19,7 +21,7 @@ function Table() {
         </thead>
         <tbody>
           {
-            apiData.filter((data) => data.name.includes(inputText)).map((data) => (
+            apiDataFilteredByName.map((data) => (
               <tr key={ data.name }>
                 <td data-testid="planet-name">{ data.name }</td>
                 <td>{ data.rotation_period }</td>
